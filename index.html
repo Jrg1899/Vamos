@@ -29,36 +29,28 @@
 <script>
     function procesarFrase() {
         const hoy = new Date();
-        // Sincronizamos a mediodía para evitar saltos de hora
+        // Sincronizamos a mediodía para evitar problemas de horario
         const hoyCalculo = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate(), 12, 0, 0);
 
-        // 1. Día en curso del año (Resultado hoy: 117)
+        // 1. Día del año (Ajustado con +1 para que hoy sea 117)
         const inicioAnio = new Date(hoy.getFullYear(), 0, 0, 12, 0, 0);
         const diaAnio = Math.floor((hoyCalculo - inicioAnio) / 86400000);
 
-        // Función para calcular días (ajustada para tus números exactos)
+        // Función con +1 para incluir el día de inicio y el actual
         function calcularDias(fechaStr) {
             const inicio = new Date(fechaStr);
             inicio.setHours(12, 0, 0, 0);
-            return Math.floor((hoyCalculo - inicio) / 86400000);
+            return Math.floor((hoyCalculo - inicio) / 86400000) + 1;
         }
 
-        // 2. Erich: 4864 (Nacimiento 31/12/2012 / 01/01/2013)
+        // Cálculos con las fechas de nacimiento que me diste
         const diasErich = calcularDias("2013-01-01"); 
-        
-        // 3. Lucía: 4144 (Nacimiento 22/12/2014)
         const diasLucia = calcularDias("2014-12-22");
-
-        // 4. Martín: 3237 (Nacimiento 16/06/2017)
         const diasMartin = calcularDias("2017-06-16");
-
-        // 5. Diego: 2846 (Nacimiento 12/07/2018)
         const diasDiego = calcularDias("2018-07-12");
-
-        // 6. El último dato: 2116 (Nacimiento 11/07/2020)
         const diasUltimo = calcularDias("2020-07-11");
 
-        // Construcción de la frase siguiendo tu estructura exacta
+        // Construcción de la frase con tus números deseados
         const frase = `Feliz día ${diaAnio} para los románticos ` +
                       `Feliz día ${diasErich} para Erich ` +
                       `Feliz día ${diasLucia} para Lucía ` +
