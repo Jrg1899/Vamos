@@ -29,33 +29,42 @@
 <script>
     function procesarFrase() {
         const hoy = new Date();
+        // Sincronizamos a mediodía para evitar saltos de hora
         const hoyCalculo = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate(), 12, 0, 0);
 
-        // 1. Día del año (117 hoy)
+        // 1. Día en curso del año (Resultado hoy: 117)
         const inicioAnio = new Date(hoy.getFullYear(), 0, 0, 12, 0, 0);
         const diaAnio = Math.floor((hoyCalculo - inicioAnio) / 86400000);
 
-        // Función para calcular días transcurridos
-        function diasDesde(fechaStr) {
+        // Función para calcular días (ajustada para tus números exactos)
+        function calcularDias(fechaStr) {
             const inicio = new Date(fechaStr);
             inicio.setHours(12, 0, 0, 0);
             return Math.floor((hoyCalculo - inicio) / 86400000);
         }
 
-        // Cálculos según tus fechas de nacimiento
-        const diasRomanticos = diasDesde("2012-12-31"); // 4865 si contamos el día 1, ajustado a 4864
-        const diasErich = diasDesde("2014-12-22");      // 4144
-        const diasLucia = diasDesde("2017-06-16");      // 3237
-        const diasMartin = diasDesde("2018-07-12");     // 2846
-        const diasDiego = diasDesde("2020-07-11");      // 2116
+        // 2. Erich: 4864 (Nacimiento 31/12/2012 / 01/01/2013)
+        const diasErich = calcularDias("2013-01-01"); 
+        
+        // 3. Lucía: 4144 (Nacimiento 22/12/2014)
+        const diasLucia = calcularDias("2014-12-22");
 
-        // Construcción de la frase exacta
+        // 4. Martín: 3237 (Nacimiento 16/06/2017)
+        const diasMartin = calcularDias("2017-06-16");
+
+        // 5. Diego: 2846 (Nacimiento 12/07/2018)
+        const diasDiego = calcularDias("2018-07-12");
+
+        // 6. El último dato: 2116 (Nacimiento 11/07/2020)
+        const diasUltimo = calcularDias("2020-07-11");
+
+        // Construcción de la frase siguiendo tu estructura exacta
         const frase = `Feliz día ${diaAnio} para los románticos ` +
-                      `Feliz día ${diasRomanticos} para Erich ` +
-                      `Feliz día ${diasErich} para Lucía ` +
-                      `Feliz día ${diasLucia} para Martín ` +
-                      `Feliz día ${diasMartin} para Diego ` +
-                      `Feliz día ${diasDiego}`;
+                      `Feliz día ${diasErich} para Erich ` +
+                      `Feliz día ${diasLucia} para Lucía ` +
+                      `Feliz día ${diasMartin} para Martín ` +
+                      `Feliz día ${diasDiego} para Diego ` +
+                      `Feliz día ${diasUltimo}`;
 
         document.getElementById('texto-final').value = frase;
         document.getElementById('resultado-container').style.display = 'block';
