@@ -6,107 +6,79 @@
     <title>Vamos 📝</title>
     <style>
         body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; display: flex; justify-content: center; padding: 20px; color: #333; }
-        .container { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 500px; width: 100%; }
-        h1 { color: #1a73e8; font-size: 1.8rem; text-align: center; margin-bottom: 5px; }
-        .input-group { margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
-        label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 0.9rem; }
-        input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 1rem; }
-        button { width: 100%; padding: 14px; background: #1a73e8; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; font-size: 1rem; }
+        .container { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 500px; width: 100%; text-align: center; }
+        h1 { color: #1a73e8; font-size: 2rem; margin-bottom: 20px; }
+        button { width: 100%; padding: 15px; background: #1a73e8; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1.1rem; transition: 0.3s; }
         button:hover { background: #1557b0; }
-        #resultado-container { margin-top: 20px; padding: 15px; background: #e8f0fe; border-radius: 8px; display: none; }
-        #texto-final { width: 100%; height: 100px; margin-bottom: 10px; padding: 10px; border: 1px solid #aecbfa; border-radius: 5px; background: white; font-family: inherit; box-sizing: border-box; resize: none; font-size: 1.1rem; }
-        .copy-btn { background: #34a853; }
+        #resultado-container { margin-top: 25px; padding: 15px; background: #e8f0fe; border-radius: 8px; display: none; }
+        #texto-final { width: 100%; height: 120px; margin-bottom: 10px; padding: 10px; border: 1px solid #aecbfa; border-radius: 5px; background: white; font-family: inherit; box-sizing: border-box; resize: none; font-size: 1.1rem; }
+        .copy-btn { background: #34a853; margin-top: 10px; }
         .copy-btn:hover { background: #2d8e47; }
+        .info { font-size: 0.9rem; color: #666; margin-bottom: 20px; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>Vamos</h1>
-    <p style="font-size: 0.85rem; color: #666; text-align: center;">Los nombres y fechas se guardan en este dispositivo.</p>
-    
-    <div id="lista-nombres"></div>
+    <p class="info">Pulsa el botón para generar la frase de hoy con los datos grabados.</p>
 
-    <button onclick="procesarFrase()">Generar Frase Diaria</button>
+    <button onclick="procesarFrase()">Generar Frase de Hoy 🚀</button>
 
     <div id="resultado-container">
-        <label>Frase lista para enviar:</label>
+        <label style="display:block; margin-bottom:10px; font-weight:bold;">Frase lista:</label>
         <textarea id="texto-final" readonly></textarea>
         <button class="copy-btn" onclick="copiarAlPortapapeles()">Copiar al Portapapeles 📋</button>
     </div>
 </div>
 
 <script>
-    const lista = document.getElementById('lista-nombres');
-    
-    // Generar los 6 bloques de entrada
-    for (let i = 1; i <= 6; i++) {
-        const guardadoNombre = localStorage.getItem(`nombre${i}`) || "";
-        const guardadaFecha = localStorage.getItem(`fecha${i}`) || "";
-        
-        lista.innerHTML += `
-            <div class="input-group">
-                <label>Persona ${i}</label>
-                <input type="text" id="nombre${i}" value="${guardadoNombre}" placeholder="Ej: Erich" oninput="guardar(${i})">
-                <input type="date" id="fecha${i}" value="${guardadaFecha}" style="margin-top:8px" onchange="guardar(${i})">
-            </div>
-        `;
-    }
-
-    function guardar(id) {
-        localStorage.setItem(`nombre${id}`, document.getElementById(`nombre${id}`).value);
-        localStorage.setItem(`fecha${id}`, document.getElementById(`fecha${id}`).value);
-    }
+    // --- DATOS GRABADOS (Puedes editarlos aquí cuando quieras) ---
+    const datosPersonas = [
+        { nombre: "los románticos", fecha: "2025-12-31" },
+        { nombre: "Erich", fecha: "2013-01-02" },
+        { nombre: "Lucía", fecha: "2014-12-22" },
+        { nombre: "Martín", fecha: "2017-06-16" },
+        { nombre: "Diego", fecha: "2018-07-12" },
+        { nombre: "", fecha: "2020-07-11" } // El último sin nombre como en tu ejemplo
+    ];
 
     function procesarFrase() {
         let textoFinal = "";
         const hoy = new Date();
         hoy.setHours(12, 0, 0, 0); // Normalizar hoy a mediodía
 
-        const personasValidas = [];
+        datosPersonas.forEach((p, index) => {
+            const fechaInicio = new Date(p.fecha);
+            fechaInicio.setHours(12, 0, 0, 0);
 
-        for (let i = 1; i <= 6; i++) {
-            const nombre = document.getElementById(`nombre${i}`).value.trim();
-            const fechaVal = document.getElementById(`fecha${i}`).value;
-
-            if (fechaVal) {
-                const fechaInicio = new Date(fechaVal);
-                fechaInicio.setHours(12, 0, 0, 0); // Normalizar fecha inicio
-
-                const diff = hoy.getTime() - fechaInicio.getTime();
-                const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
-                personasValidas.push({ nombre, dias });
-            }
-        }
-
-        // Construcción de la frase con la lógica exacta de tu script original
-        personasValidas.forEach((p, index) => {
-            const esUltimo = (index === personasValidas.length - 1);
+            const diff = hoy.getTime() - fechaInicio.getTime();
+            const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
+            
+            const esUltimo = (index === datosPersonas.length - 1);
             
             if (esUltimo) {
-                // El último lleva 4 espacios antes del nombre (si hay nombre)
-                textoFinal += "Feliz día " + p.dias + (p.nombre ? "    " + p.nombre : "");
+                // Formato con 4 espacios para el último
+                textoFinal += "Feliz día " + dias + (p.nombre ? "    " + p.nombre : "");
             } else {
-                // Los intermedios llevan " para "
-                textoFinal += "Feliz día " + p.dias + " para " + p.nombre + " ";
+                // Formato "para" para los demás
+                textoFinal += "Feliz día " + dias + " para " + p.nombre + " ";
             }
         });
 
-        const textArea = document.getElementById('texto-final');
-        textArea.value = textoFinal;
+        document.getElementById('texto-final').value = textoFinal;
         document.getElementById('resultado-container').style.display = 'block';
     }
 
     function copiarAlPortapapeles() {
         const textArea = document.getElementById('texto-final');
         textArea.select();
-        textArea.setSelectionRange(0, 99999); // Para móviles
+        textArea.setSelectionRange(0, 99999);
         navigator.clipboard.writeText(textArea.value);
         
         const btn = document.querySelector('.copy-btn');
-        const originalText = btn.innerHTML;
-        btn.innerHTML = "¡Copiado! ✅";
-        setTimeout(() => { btn.innerHTML = originalText; }, 2000);
+        btn.innerHTML = "¡Copiado con éxito! ✅";
+        setTimeout(() => { btn.innerHTML = "Copiar al Portapapeles 📋"; }, 2000);
     }
 </script>
 
