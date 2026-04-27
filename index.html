@@ -12,45 +12,44 @@
         button:hover { background: #1557b0; }
         #resultado-container { margin-top: 25px; padding: 15px; background: #e8f0fe; border-radius: 8px; display: none; }
         #texto-final { width: 100%; height: 120px; margin-bottom: 10px; padding: 10px; border: 1px solid #aecbfa; border-radius: 5px; background: white; font-family: inherit; box-sizing: border-box; resize: none; font-size: 1.1rem; }
-        .copy-btn { background: #34a853; margin-top: 10px; }
-        .copy-btn:hover { background: #2d8e47; }
-        .info { font-size: 0.9rem; color: #666; margin-bottom: 20px; }
+        .copy-btn { background: #34a853; margin-top: 10px; color: white; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>Vamos</h1>
-    <p class="info">Pulsa el botón para generar la frase de hoy con los datos grabados.</p>
+    <p style="margin-bottom:20px; color:#666;">Contador de días exacto</p>
 
-    <button onclick="procesarFrase()">Generar Frase de Hoy 🚀</button>
+    <button onclick="procesarFrase()">Generar Frase Actualizada 🚀</button>
 
     <div id="resultado-container">
-        <label style="display:block; margin-bottom:10px; font-weight:bold;">Frase lista:</label>
         <textarea id="texto-final" readonly></textarea>
         <button class="copy-btn" onclick="copiarAlPortapapeles()">Copiar al Portapapeles 📋</button>
     </div>
 </div>
 
 <script>
-    // --- DATOS GRABADOS (Puedes editarlos aquí cuando quieras) ---
+    // DATOS CORREGIDOS CON TUS FECHAS REALES
     const datosPersonas = [
-        { nombre: "los románticos", fecha: "2025-12-31" },
-        { nombre: "Erich", fecha: "2013-01-02" },
-        { nombre: "Lucía", fecha: "2014-12-22" },
-        { nombre: "Martín", fecha: "2017-06-16" },
-        { nombre: "Diego", fecha: "2018-07-12" },
-        { nombre: "", fecha: "2020-07-11" } // El último sin nombre como en tu ejemplo
+        { nombre: "los románticos", fecha: "2025-12-31" }, 
+        { nombre: "Erich", fecha: "2014-12-22" }, // Fecha exacta de Erich
+        { nombre: "Lucía", fecha: "2017-06-16" }, // Fecha exacta de Lucía
+        { nombre: "Martín", fecha: "2013-01-02" }, 
+        { nombre: "Diego", fecha: "2018-07-12" }, 
+        { nombre: "", fecha: "2020-07-11" } 
     ];
 
     function procesarFrase() {
         let textoFinal = "";
         const hoy = new Date();
-        hoy.setHours(12, 0, 0, 0); // Normalizar hoy a mediodía
+        // Ponemos la hora a las 23:59 para asegurar que cuente el día actual completo
+        hoy.setHours(23, 59, 59, 999); 
 
         datosPersonas.forEach((p, index) => {
             const fechaInicio = new Date(p.fecha);
-            fechaInicio.setHours(12, 0, 0, 0);
+            // La fecha de nacimiento empieza a las 00:00
+            fechaInicio.setHours(0, 0, 0, 0);
 
             const diff = hoy.getTime() - fechaInicio.getTime();
             const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
@@ -58,10 +57,9 @@
             const esUltimo = (index === datosPersonas.length - 1);
             
             if (esUltimo) {
-                // Formato con 4 espacios para el último
+                // Formato con 4 espacios para el último elemento
                 textoFinal += "Feliz día " + dias + (p.nombre ? "    " + p.nombre : "");
             } else {
-                // Formato "para" para los demás
                 textoFinal += "Feliz día " + dias + " para " + p.nombre + " ";
             }
         });
@@ -73,11 +71,10 @@
     function copiarAlPortapapeles() {
         const textArea = document.getElementById('texto-final');
         textArea.select();
-        textArea.setSelectionRange(0, 99999);
         navigator.clipboard.writeText(textArea.value);
         
         const btn = document.querySelector('.copy-btn');
-        btn.innerHTML = "¡Copiado con éxito! ✅";
+        btn.innerHTML = "¡Copiado! ✅";
         setTimeout(() => { btn.innerHTML = "Copiar al Portapapeles 📋"; }, 2000);
     }
 </script>
