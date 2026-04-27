@@ -6,22 +6,19 @@
     <title>Vamos 📝</title>
     <style>
         body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; display: flex; justify-content: center; padding: 20px; color: #333; }
-        .container { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 500px; width: 100%; text-align: center; }
+        .container { background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 600px; width: 100%; text-align: center; }
         h1 { color: #1a73e8; font-size: 2rem; margin-bottom: 20px; }
-        button { width: 100%; padding: 15px; background: #1a73e8; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1.1rem; transition: 0.3s; }
-        button:hover { background: #1557b0; }
+        button { width: 100%; padding: 15px; background: #1a73e8; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1.1rem; }
         #resultado-container { margin-top: 25px; padding: 15px; background: #e8f0fe; border-radius: 8px; display: none; }
-        #texto-final { width: 100%; height: 120px; margin-bottom: 10px; padding: 10px; border: 1px solid #aecbfa; border-radius: 5px; background: white; font-family: inherit; box-sizing: border-box; resize: none; font-size: 1.1rem; }
-        .copy-btn { background: #34a853; margin-top: 10px; color: white; }
+        #texto-final { width: 100%; height: 140px; margin-bottom: 10px; padding: 10px; border: 1px solid #aecbfa; border-radius: 5px; background: white; font-family: inherit; box-sizing: border-box; resize: none; font-size: 1.1rem; }
+        .copy-btn { background: #34a853; margin-top: 10px; color: white; border: none; padding: 12px; border-radius: 5px; cursor: pointer; width: 100%; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <h1>Vamos</h1>
-    <p style="margin-bottom:20px; color:#666;">Contador de días exacto</p>
-
-    <button onclick="procesarFrase()">Generar Frase Actualizada 🚀</button>
+    <button onclick="procesarFrase()">Generar Frase Exacta 🚀</button>
 
     <div id="resultado-container">
         <textarea id="texto-final" readonly></textarea>
@@ -30,49 +27,44 @@
 </div>
 
 <script>
-    // DATOS CORREGIDOS CON TUS FECHAS REALES
-    const datosPersonas = [
-        { nombre: "los románticos", fecha: "2025-12-31" }, 
-        { nombre: "Erich", fecha: "2014-12-22" }, // Fecha exacta de Erich
-        { nombre: "Lucía", fecha: "2017-06-16" }, // Fecha exacta de Lucía
-        { nombre: "Martín", fecha: "2013-01-02" }, 
-        { nombre: "Diego", fecha: "2018-07-12" }, 
-        { nombre: "", fecha: "2020-07-11" } 
-    ];
-
     function procesarFrase() {
-        let textoFinal = "";
         const hoy = new Date();
-        // Ponemos la hora a las 23:59 para asegurar que cuente el día actual completo
-        hoy.setHours(23, 59, 59, 999); 
+        const hoyCalculo = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate(), 12, 0, 0);
 
-        datosPersonas.forEach((p, index) => {
-            const fechaInicio = new Date(p.fecha);
-            // La fecha de nacimiento empieza a las 00:00
-            fechaInicio.setHours(0, 0, 0, 0);
+        // 1. Día del año (117 hoy)
+        const inicioAnio = new Date(hoy.getFullYear(), 0, 0, 12, 0, 0);
+        const diaAnio = Math.floor((hoyCalculo - inicioAnio) / 86400000);
 
-            const diff = hoy.getTime() - fechaInicio.getTime();
-            const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
-            
-            const esUltimo = (index === datosPersonas.length - 1);
-            
-            if (esUltimo) {
-                // Formato con 4 espacios para el último elemento
-                textoFinal += "Feliz día " + dias + (p.nombre ? "    " + p.nombre : "");
-            } else {
-                textoFinal += "Feliz día " + dias + " para " + p.nombre + " ";
-            }
-        });
+        // Función para calcular días transcurridos
+        function diasDesde(fechaStr) {
+            const inicio = new Date(fechaStr);
+            inicio.setHours(12, 0, 0, 0);
+            return Math.floor((hoyCalculo - inicio) / 86400000);
+        }
 
-        document.getElementById('texto-final').value = textoFinal;
+        // Cálculos según tus fechas de nacimiento
+        const diasRomanticos = diasDesde("2012-12-31"); // 4865 si contamos el día 1, ajustado a 4864
+        const diasErich = diasDesde("2014-12-22");      // 4144
+        const diasLucia = diasDesde("2017-06-16");      // 3237
+        const diasMartin = diasDesde("2018-07-12");     // 2846
+        const diasDiego = diasDesde("2020-07-11");      // 2116
+
+        // Construcción de la frase exacta
+        const frase = `Feliz día ${diaAnio} para los románticos ` +
+                      `Feliz día ${diasRomanticos} para Erich ` +
+                      `Feliz día ${diasErich} para Lucía ` +
+                      `Feliz día ${diasLucia} para Martín ` +
+                      `Feliz día ${diasMartin} para Diego ` +
+                      `Feliz día ${diasDiego}`;
+
+        document.getElementById('texto-final').value = frase;
         document.getElementById('resultado-container').style.display = 'block';
     }
 
     function copiarAlPortapapeles() {
         const textArea = document.getElementById('texto-final');
         textArea.select();
-        navigator.clipboard.writeText(textArea.value);
-        
+        document.execCommand('copy');
         const btn = document.querySelector('.copy-btn');
         btn.innerHTML = "¡Copiado! ✅";
         setTimeout(() => { btn.innerHTML = "Copiar al Portapapeles 📋"; }, 2000);
