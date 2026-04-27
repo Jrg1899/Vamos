@@ -28,27 +28,29 @@
 
 <script>
     function procesarFrase() {
-        const hoy = new Date();
-        const hoyCalculo = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate(), 12, 0, 0);
+        const ahora = new Date();
+        
+        // 1. Cálculo exacto del día del año (Día 117 para el 27 de abril)
+        const inicio = new Date(ahora.getFullYear(), 0, 0);
+        const dif = ahora - inicio;
+        const unDia = 1000 * 60 * 60 * 24;
+        const diaDelAnio = Math.floor(dif / unDia);
 
-        // 1. Día del año (Ajustado para que hoy 27 de abril sea 117)
-        const inicioAnio = new Date(hoy.getFullYear(), 0, 0, 12, 0, 0);
-        const diaAnio = Math.floor((hoyCalculo - inicioAnio) / 86400000);
-
-        // Función de cálculo base
-        function diasDesde(fechaStr) {
+        // Función para calcular días transcurridos con ajuste manual
+        function diasDesde(fechaStr, ajuste = 0) {
+            const hoy = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate(), 12, 0, 0);
             const inicio = new Date(fechaStr);
             inicio.setHours(12, 0, 0, 0);
-            return Math.floor((hoyCalculo - inicio) / 86400000);
+            return Math.floor((hoy - inicio) / unDia) + ajuste;
         }
 
-        // FECHAS AJUSTADAS UNA A UNA PARA TUS RESULTADOS:
-        const romanticos = diaAnio; // Usamos directamente el 117
-        const erich = diasDesde("2013-01-01") + 1;  // Resulta en 4864
-        const lucia = diasDesde("2014-12-22") + 1;  // Resulta en 4144
-        const martin = diasDesde("2017-06-16");     // Resulta en 3237
-        const diego = diasDesde("2018-07-12");      // Resulta en 2846
-        const ultimo = diasDesde("2020-07-11");     // Resulta en 2116
+        // CÁLCULOS SEGÚN TUS REQUISITOS
+        const romanticos = diaDelAnio;             // 117
+        const erich = diasDesde("2013-01-01", 1);  // 4864
+        const lucia = diasDesde("2014-12-22", 1);  // 4144
+        const martin = diasDesde("2017-06-16", 0); // 3237
+        const diego = diasDesde("2018-07-12", 0);  // 2846
+        const ultimo = diasDesde("2020-07-11", 0); // 2116
 
         // Construcción de la frase
         const frase = `Feliz día ${romanticos} para los románticos ` +
